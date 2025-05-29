@@ -10,6 +10,7 @@ from atom3d.filters.filters import first_model_filter
 from atom3d.datasets import load_dataset, make_lmdb_dataset
 import atom3d.util.file as fi
 from collapse import initialize_model, atom_info
+from atom3d.datasets.pdb_dataset import PDBDataset
 
 def get_chain_sequences(df):
     """Return list of tuples of (id, sequence) for different chains of monomers in a given dataframe."""
@@ -27,6 +28,34 @@ def get_chain_sequences(df):
         chain_confidences.append(chain['bfactor'].tolist())
     return chain_sequences, chain_residues, chain_confidences
 
+class DropEverythingButArrays:
+    """
+    Run the COLLAPSE EmbedTransform, then strip out *any* pandas
+    or other heavy objects so that unpickling never has to
+    re-materialize DataFrames.
+    """
+    def __init__(self, base_transform):
+        self.base = base_transform
+
+    def __call__(self, elem):
+        fp = elem.get('file_path', '<no‐path>')
+        print(f"[EMBED] {fp}", flush=True)
+
+        out = self.base(elem)
+        if out is None:
+            print("  ↳ skipped (transform returned None)")
+            return None
+
+        # now drop anything that isn't a plain Python list or numpy array
+        for k in list(out.keys()):
+            v = out[k]
+            # keep strings, lists, numpy arrays
+            if isinstance(v, (str, bytes, list, tuple, np.ndarray)):
+                continue
+            # drop everything else
+            print(f"   ↳ dropping key {k!r} of type {type(v).__name__}")
+            out.pop(k, None)
+        return out
 
 def embed_esm(df, model, batch_converter, device):
     chain_sequences, chain_residues, confidences = get_chain_sequences(df)
@@ -112,16 +141,18 @@ if __name__=="__main__":
 
     if args.encoder.upper() == 'COLLAPSE':
         model = initialize_model(device=device)
-        transform = EmbedTransform(model, device=device, include_hets=False, compute_res_graph=False)
+        transform = DropEverythingButArrays(base)
+        dataset = load_dataset(args.data_dir, args.filetype, transform=transform)
     elif args.encoder.upper() == 'ESM':
         model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t33_650M_UR50D")
         batch_converter = alphabet.get_batch_converter()
         model = model.to(device)
         model.eval()
         transform = ESMTransform(model, batch_converter, device=device, include_hets=False)
+        dataset = load_dataset(args.data_dir, args.filetype, transform=transform)
     else:
         raise Exception('Valid encoders are COLLAPSE and ESM')
-    dataset = load_dataset(args.data_dir, args.filetype, transform=transform)
+    
     
     if args.num_splits > 1:
         out_path = os.path.join(args.out_dir, f'tmp_{args.split_id}')

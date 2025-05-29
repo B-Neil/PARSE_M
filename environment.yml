@@ -1,0 +1,28 @@
+name: parse
+channels:
+  - conda-forge
+  - pytorch
+  - defaults
+dependencies:
+  - python=3.10
+  - numpy=1.24.4
+  - scipy=1.15.2
+  - scikit-learn
+  - matplotlib
+  - numba
+  - pandas
+  - pytorch=2.0
+  - torchvision
+  - torchaudio
+  - cudatoolkit=11.7  # Comment this line out or delete for CPU-only systems
+  - pip
+  - pip:
+      - atom3d
+      - blitzgsea
+      - fastdist
+      - torch-scatter
+      - torch-sparse
+      - torch-cluster
+      - torch-geometric
+      # - git+https://github.com/drorlab/gvp-pytorch
+
