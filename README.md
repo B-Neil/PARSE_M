@@ -58,7 +58,7 @@ to complete the setup.
 
 ## Download data
 
-Download CSA reference data and precomputed embeddings for AlphaFoldDB datasets (human and dark proteomes) from [Zenodo](https://zenodo.org/record/).
+Download CSA reference data and precomputed embeddings for AlphaFoldDB datasets (human and dark proteomes) from [Zenodo](https://zenodo.org/record/8437087).
 
 CSA data (required):
 * `csa_function_sets_nn.pkl`: function sets dictionary
