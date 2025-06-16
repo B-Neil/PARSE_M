@@ -1,19 +1,64 @@
 # PARSE
 Protein Annotation by Residue-Specific Enrichment: a site-based statistical method for interpretable protein function annotation
 
-## Install dependencies
+## 📦 Install Dependencies
 
-We recommend installing all dependencies in a conda environment:
+We recommend installing all dependencies using the provided `environment.yml` file in a conda environment. This ensures version compatibility and avoids issues related to binary incompatibilities like `GLIBCXX` or `CXXABI`.
 
-```conda create -n parse python=3.10```
+### ✅ Step 1: Create and activate the environment
 
-To install, run the following script on a GPU-enabled machine. To install for CPU only, replace `cu117` with `cpu`.
+```bash
+conda env create -f environment.yml
+conda activate parse
+```
 
-```./install_dependencies.sh```
+If you're on a system with an older version of libstdc++.so.6, you may need to load a newer GCC version to avoid runtime errors (e.g., GLIBCXX_3.4.26 not found):
+
+```bash
+module load gcc/10.3.0
+export LD_LIBRARY_PATH=/path/to/gcc/10.3.0/lib64:$LD_LIBRARY_PATH
+```
+
+You can find the correct path via:
+```bash
+find $(dirname $(which gcc))/.. -name "libstdc++.so.6"
+```
+
+This environment supports CUDA 11.7 for GPU execution. If you are running on CPU only, you can comment out or remove the cudatoolkit=11.7 line in environment.yml.
+
+Check if GPU is available:
+```bash
+python -c "import torch; print(torch.cuda.is_available())"
+```
+
+If you prefer a scripted setup:
+```bash
+./install_dependencies.sh
+```
+This handles environment creation and optional compiler module loading.
+
+To generate embeddings, GVP-PyTorch is also necessary. To ensure compatibility,
+
+```bash
+git clone https://github.com/drorlab/gvp-pytorch.git
+```
+
+upon entering the credentials, navigate to 
+```bash
+cd gvp-pytorch
+vim setup.py
+```
+
+and change 'sklearn' to 'scikit-learn'. Then
+
+```bash
+pip install .
+```
+to complete the setup.
 
 ## Download data
 
-Download CSA reference data and precomputed embeddings for AlphaFoldDB datasets (human and dark proteomes) from [Zenodo](https://zenodo.org/record/).
+Download CSA reference data and precomputed embeddings for AlphaFoldDB datasets (human and dark proteomes) from [Zenodo](https://zenodo.org/record/8437087).
 
 CSA data (required):
 * `csa_function_sets_nn.pkl`: function sets dictionary

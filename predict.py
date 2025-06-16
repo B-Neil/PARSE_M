@@ -1,5 +1,7 @@
 from collapse import process_pdb, embed_protein, initialize_model
 from atom3d.datasets import load_dataset
+import pickle
+from raw_lmdb import RawLMDB
 import argparse
 import time
 import parse
@@ -33,7 +35,8 @@ if __name__=="__main__":
         print(f'Time to embed PDB: {time.time() - start:.2f} seconds')
 
     elif args.precomputed_id and args.precomputed_lmdb:
-        pdb_dataset = load_dataset(args.precomputed_lmdb, 'lmdb')
+        #pdb_dataset = load_dataset(args.precomputed_lmdb, 'lmdb')
+        pdb_dataset = RawLMDB(args.precomputed_lmdb)
         idx = pdb_dataset.ids_to_indices([args.precomputed_id])[0]
         embed_data = pdb_dataset[idx]
     

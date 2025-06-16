@@ -1,16 +1,11 @@
 #!/bin/bash
 
-# install the following in conda env created by `conda create -n parse python=3.10`
-# if installing GPU version, make sure to run on GPU-enabled machine
-
-pip install torch==2.0.0+cu117 --index-url https://download.pytorch.org/whl/cu117
-
-pip install torch_geometric
-
-pip install torch_scatter torch_sparse torch_cluster -f https://data.pyg.org/whl/torch-2.0.0+cu117.html
-
-pip install -r requirements.txt
-
-git clone https://github.com/drorlab/gvp-pytorch
-cd gvp-pytorch
-pip install .
+source /home/groups/rbaltman/tartici/miniconda3/etc/profile.d/conda.sh
+# Load appropriate compiler module if needed
+module load gcc/10.3.0
+export LD_LIBRARY_PATH=/path/to/gcc/10.3.0/lib64:$LD_LIBRARY_PATH
+export SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True
+# Create and activate env
+conda env create -f environment.yml
+source /home/groups/rbaltman/tartici/miniconda3/etc/profile.d/conda.sh
+conda activate parse

@@ -13,11 +13,15 @@ def pdb_from_fname(fname):
     af_flag = False
     if fname.endswith('.ent.gz'):
         pdb = fname[3:7]
+    elif '.ent' in fname:
+        pdb = fname[3:7]
     elif fname.endswith('.pdb'):
         pdb = fname[:-4]
     elif 'AF' in fname:
         af_flag = True
         pdb = fname.split('-')[1]
+    else:
+        raise Exception(f'File extensione error for fname {fname}')
     return pdb, af_flag
 
 def get_db_site_map(rnk):
