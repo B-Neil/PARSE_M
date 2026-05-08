@@ -141,6 +141,7 @@ if __name__=="__main__":
 
     if args.encoder.upper() == 'COLLAPSE':
         model = initialize_model(device=device)
+        base = EmbedTransform(model, device=device)
         transform = DropEverythingButArrays(base)
         dataset = load_dataset(args.data_dir, args.filetype, transform=transform)
     elif args.encoder.upper() == 'ESM':
