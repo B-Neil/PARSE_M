@@ -44,6 +44,7 @@ git clone https://github.com/drorlab/gvp-pytorch.git
 ```
 
 ```bash
+cd gvp-pytorch
 pip install .
 ```
 to complete the setup.
