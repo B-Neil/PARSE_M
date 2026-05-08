@@ -43,18 +43,22 @@ To generate embeddings, GVP-PyTorch is also necessary. To ensure compatibility,
 git clone https://github.com/drorlab/gvp-pytorch.git
 ```
 
-upon entering the credentials, navigate to 
-```bash
-cd gvp-pytorch
-vim setup.py
-```
-
-and change 'sklearn' to 'scikit-learn'. Then
-
 ```bash
 pip install .
 ```
 to complete the setup.
+
+```bash
+https://github.com/awfderry/COLLAPSE.git
+```
+
+```bash
+cd COLLAPSE/data
+bash download_data.sh checkpoints.tar.gz
+tar -xzf checkpoints.tar.gz
+```
+
+
 
 ## Download data
 
