@@ -10,7 +10,7 @@ from atom3d.filters.filters import first_model_filter
 from atom3d.datasets import load_dataset, make_lmdb_dataset
 import atom3d.util.file as fi
 from collapse import initialize_model, atom_info
-from atom3d.datasets.pdb_dataset import PDBDataset
+from atom3d.datasets import PDBDataset
 
 def get_chain_sequences(df):
     """Return list of tuples of (id, sequence) for different chains of monomers in a given dataframe."""
@@ -143,6 +143,7 @@ if __name__=="__main__":
         model = initialize_model(device=device)
         base = EmbedTransform(model, device=device)
         transform = DropEverythingButArrays(base)
+        
         dataset = load_dataset(args.data_dir, args.filetype, transform=transform)
     elif args.encoder.upper() == 'ESM':
         model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t33_650M_UR50D")
